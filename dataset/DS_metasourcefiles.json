@@ -1,0 +1,46 @@
+{
+	"name": "DS_metasourcefiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Adls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"param_filename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().param_filename",
+					"type": "Expression"
+				},
+				"folderPath": "source",
+				"fileSystem": "sampleadlscontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "empid",
+				"type": "String"
+			},
+			{
+				"name": "empname",
+				"type": "String"
+			},
+			{
+				"name": "empsal",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

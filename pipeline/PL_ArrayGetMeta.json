@@ -1,0 +1,118 @@
+{
+	"name": "PL_ArrayGetMeta",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Properties",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_meta",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"exists",
+						"childItems",
+						"itemName",
+						"itemType",
+						"lastModified"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "set itemname",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Properties",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "itemname",
+					"value": {
+						"value": "@activity('Get Properties').output.itemName",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetFileExists",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Properties",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "itemexists",
+					"value": {
+						"value": "@activity('Get Properties').output.exists",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set childitems",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Properties",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "childitems",
+					"value": {
+						"value": "@activity('Get Properties').output.childItems",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"itemname": {
+				"type": "String"
+			},
+			"itemexists": {
+				"type": "Boolean"
+			},
+			"childitems": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "08072022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-08T03:20:43Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

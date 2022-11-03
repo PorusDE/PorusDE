@@ -1,0 +1,85 @@
+{
+	"name": "ds_prodsettgt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_sql",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dsparam_targetschema": {
+				"type": "string"
+			},
+			"dsparam_targettable": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ProductID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StandardCost",
+				"type": "varchar"
+			},
+			{
+				"name": "ListPrice",
+				"type": "varchar"
+			},
+			{
+				"name": "Size",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Weight",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductCategoryID",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductModelID",
+				"type": "varchar"
+			},
+			{
+				"name": "SellStartDate",
+				"type": "varchar"
+			},
+			{
+				"name": "SellEndDate",
+				"type": "varchar"
+			},
+			{
+				"name": "ModifiedDate",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().dsparam_targetschema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().dsparam_targettable",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

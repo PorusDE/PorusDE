@@ -1,0 +1,47 @@
+{
+	"name": "DS_meta1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "configmetdataId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sourcecontainer",
+				"type": "varchar"
+			},
+			{
+				"name": "sourcefolder",
+				"type": "varchar"
+			},
+			{
+				"name": "sourcefile",
+				"type": "varchar"
+			},
+			{
+				"name": "targetschema",
+				"type": "varchar"
+			},
+			{
+				"name": "targettable",
+				"type": "varchar"
+			},
+			{
+				"name": "Isactive",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "configmetadata"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

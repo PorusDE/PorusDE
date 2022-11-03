@@ -1,0 +1,133 @@
+{
+	"name": "PL_LoadProduct",
+	"properties": {
+		"activities": [
+			{
+				"name": "LKP_GetMeta",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select * from configmetadata where isactive=1",
+						"queryTimeout": "01:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_meta1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LKP_GetMeta",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LKP_GetMeta').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy product data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_prodset",
+									"type": "DatasetReference",
+									"parameters": {
+										"dsparam_sourcecontainer": {
+											"value": "@item().sourcecontainer",
+											"type": "Expression"
+										},
+										"dsparam_sourcefolder": {
+											"value": "@item().sourcefolder",
+											"type": "Expression"
+										},
+										"dsparam_sourcefile": {
+											"value": "@item().sourcefile",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_prodsettgt",
+									"type": "DatasetReference",
+									"parameters": {
+										"dsparam_targetschema": {
+											"value": "@item().targetschema",
+											"type": "Expression"
+										},
+										"dsparam_targettable": {
+											"value": "@item().targettable",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-08-10T03:17:50Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,36 @@
+{
+	"name": "PL_VariableDemo",
+	"properties": {
+		"activities": [
+			{
+				"name": "set the var1 value",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "var1",
+					"value": {
+						"value": "@pipeline().parameters.param1",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"param1": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"var1": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "06072022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-06T03:25:32Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

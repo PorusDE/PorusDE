@@ -1,0 +1,116 @@
+{
+	"name": "PL_DemoDSParams",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_dsparamsrc",
+						"type": "DatasetReference",
+						"parameters": {
+							"dsparam_filename": {
+								"value": "@pipeline().parameters.param_filename",
+								"type": "Expression"
+							},
+							"dsparam_container": {
+								"value": "@variables('var_container')",
+								"type": "Expression"
+							},
+							"dsparam_folder": {
+								"value": "@pipeline().parameters.param_folder",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_dsparamtgt",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_dsparam_container": {
+								"value": "@variables('var_tgtcontainer')",
+								"type": "Expression"
+							},
+							"ds_dsparam_folder": {
+								"value": "@pipeline().parameters.param_tgtfolder",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"param_filename": {
+				"type": "string"
+			},
+			"param_folder": {
+				"type": "string"
+			},
+			"param_tgtfolder": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"var_container": {
+				"type": "String",
+				"defaultValue": "sampleadlscontainer"
+			},
+			"var_tgtcontainer": {
+				"type": "String",
+				"defaultValue": "sampleadlscontainer"
+			}
+		},
+		"folder": {
+			"name": "11072022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-07-11T03:30:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

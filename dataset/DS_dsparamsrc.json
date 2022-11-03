@@ -1,0 +1,58 @@
+{
+	"name": "DS_dsparamsrc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Adls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dsparam_filename": {
+				"type": "string"
+			},
+			"dsparam_container": {
+				"type": "string"
+			},
+			"dsparam_folder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().dsparam_filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dsparam_folder",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().dsparam_container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "empid",
+				"type": "String"
+			},
+			{
+				"name": "empname",
+				"type": "String"
+			},
+			{
+				"name": "empsal",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

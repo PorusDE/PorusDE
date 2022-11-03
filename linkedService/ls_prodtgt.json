@@ -1,0 +1,19 @@
+{
+	"name": "ls_prodtgt",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=adepcserver.database.windows.net;Initial Catalog=pcde-demo;User ID=user1",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_ky",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "dbpasswordsecret"
+			}
+		}
+	}
+}

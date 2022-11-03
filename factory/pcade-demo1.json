@@ -1,0 +1,9 @@
+{
+	"name": "pcade-demo1",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "3c89c929-e85d-4304-b9ee-2a3012eea9e3",
+		"tenantId": "8412d530-12d5-49b2-b34f-a3c487a90111"
+	}
+}
