@@ -1,0 +1,27 @@
+{
+	"name": "LS_WaterMarkValues",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "WaterMarkDataId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "WaterMarkValue",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "WaterMarkData"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,46 @@
+{
+	"name": "ls_prodtgt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_param_schema": {
+				"type": "string"
+			},
+			"ds_param_table": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ProductCategoryID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ParentProductCategoryID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().ds_param_schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().ds_param_table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

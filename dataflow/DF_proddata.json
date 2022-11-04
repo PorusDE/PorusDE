@@ -1,0 +1,117 @@
+{
+	"name": "DF_proddata",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_prodsrc1",
+						"type": "DatasetReference"
+					},
+					"name": "prodsrc"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_prodcat",
+						"type": "DatasetReference"
+					},
+					"name": "productcatsrc"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_prodtgtcat",
+						"type": "DatasetReference"
+					},
+					"name": "prodtgt"
+				}
+			],
+			"transformations": [
+				{
+					"name": "prodjoin"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ProductID as integer,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as string,",
+				"          ListPrice as string,",
+				"          Size as string,",
+				"          Weight as string,",
+				"          ProductCategoryID as integer,",
+				"          ProductModelID as string,",
+				"          SellStartDate as string,",
+				"          SellEndDate as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> prodsrc",
+				"source(output(",
+				"          ProductCategoryID as integer,",
+				"          ParentProductCategoryID as integer,",
+				"          Name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> productcatsrc",
+				"prodsrc, productcatsrc join(prodsrc@ProductCategoryID == productcatsrc@ProductCategoryID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> prodjoin",
+				"prodjoin select(mapColumn(",
+				"          ProductID,",
+				"          ProductCategoryID = prodsrc@ProductCategoryID,",
+				"          ProductName = prodsrc@Name,",
+				"          ProductCategoryName = productcatsrc@Name,",
+				"          Color,",
+				"          ListPrice,",
+				"          StandardCost,",
+				"          Size,",
+				"          Weight,",
+				"          SellStartDate,",
+				"          SellEndDate,",
+				"          ModifiedDate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ProductID as string,",
+				"          Name as string,",
+				"          ProductNumber as string,",
+				"          Color as string,",
+				"          StandardCost as string,",
+				"          ListPrice as string,",
+				"          Size as string,",
+				"          Weight as string,",
+				"          ProductCategoryID as string,",
+				"          ProductModelID as string,",
+				"          SellStartDate as string,",
+				"          SellEndDate as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     partitionFileNames:['prodtgt.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> prodtgt"
+			]
+		}
+	}
+}

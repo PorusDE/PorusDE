@@ -1,0 +1,43 @@
+{
+	"name": "PL_gtfilmtadata",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get FileMetadata",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_adls12",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"columnCount"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "10092022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-10T03:25:54Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

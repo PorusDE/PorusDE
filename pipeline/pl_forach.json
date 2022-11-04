@@ -1,0 +1,54 @@
+{
+	"name": "pl_forach",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('samplecounter')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Set valus",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "cntvalus",
+								"value": {
+									"value": "@item()",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"samplecounter": {
+				"type": "Array",
+				"defaultValue": [
+					"a",
+					"b",
+					"c"
+				]
+			},
+			"cntvalus": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "10092022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-10T03:34:55Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

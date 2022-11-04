@@ -1,0 +1,43 @@
+{
+	"name": "DS_meta1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "metadataconfigId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "srccontainer",
+				"type": "varchar"
+			},
+			{
+				"name": "srcfolder",
+				"type": "varchar"
+			},
+			{
+				"name": "srcfile",
+				"type": "varchar"
+			},
+			{
+				"name": "tgtschema",
+				"type": "varchar"
+			},
+			{
+				"name": "tgttable",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "ETL",
+			"table": "metadataconfig"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

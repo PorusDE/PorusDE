@@ -1,0 +1,58 @@
+{
+	"name": "DF_SCDTyp1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_empsrc1",
+						"type": "DatasetReference"
+					},
+					"name": "EmpSrc"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_emptgt1",
+						"type": "DatasetReference"
+					},
+					"name": "emptgt"
+				}
+			],
+			"transformations": [
+				{
+					"name": "mergeemp"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpId as integer,",
+				"          EmpName as string,",
+				"          Salary as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EmpSrc",
+				"EmpSrc alterRow(upsertIf(1==1)) ~> mergeemp",
+				"mergeemp sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          EmpId as integer,",
+				"          EmpName as string,",
+				"          Salary as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['EmpId'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> emptgt"
+			]
+		}
+	}
+}

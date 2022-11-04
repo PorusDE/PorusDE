@@ -1,0 +1,9 @@
+{
+	"name": "adf-ws-pctest",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "5af64db4-c4d1-4b6b-be35-39dc09633a7c",
+		"tenantId": "8412d530-12d5-49b2-b34f-a3c487a90111"
+	}
+}

@@ -1,0 +1,168 @@
+{
+	"name": "PL_IncrmntalLoad",
+	"properties": {
+		"activities": [
+			{
+				"name": "LKP_GetCurrentWaterMarkValue",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select WaterMarkValue as CurrentWaterMarkValue  from WaterMarkData",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "LS_WaterMarkValues",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "LKP_GetLatestWaterMarkValue",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select max(UpdatdDate) LatestWaterMarkValue from Student",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "LS_WaterMarkValues",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Load Studnt",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "LKP_GetCurrentWaterMarkValue",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "LKP_GetLatestWaterMarkValue",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "Select StudentId,StudentIdName,UpdatdDate FROM Student Where UpdatdDate>'@{activity('LKP_GetCurrentWaterMarkValue').output.firstRow.CurrentWaterMarkValue}'    \nand UpdatdDate<='@{activity('LKP_GetLatestWaterMarkValue').output.firstRow.LatestWaterMarkValue}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "LS_WaterMarkValues",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "LS_stdtgt",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Updat WaterMarkValue",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Load Studnt",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_updateWaterMarkValue]",
+					"storedProcedureParameters": {
+						"LatestWaterMarkValue": {
+							"value": {
+								"value": "@activity('LKP_GetLatestWaterMarkValue').output.firstRow.LatestWaterMarkValue",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "LS_SQL2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "16102022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-16T05:09:01Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

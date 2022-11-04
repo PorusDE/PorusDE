@@ -1,0 +1,129 @@
+{
+	"name": "PL_MiscActi",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_meta",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems",
+						"exists",
+						"itemName",
+						"itemType",
+						"lastModified"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Set exists",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "chkfolderexists",
+					"value": {
+						"value": "@activity('Get files').output.exists",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set contents",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "foldercontents",
+					"value": {
+						"value": "@activity('Get files').output.childItems",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@bool(variables('chkfolderexists'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "trueact",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "yesfileexists",
+								"value": "Yes The folder exists"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"chkfolderexists": {
+				"type": "Boolean"
+			},
+			"foldercontents": {
+				"type": "Array"
+			},
+			"yesfileexists": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "10092022"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-10T03:25:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
