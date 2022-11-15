@@ -1,0 +1,78 @@
+{
+	"name": "PL_dmo",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get fils",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_srcdata",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems",
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get fils",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get fils').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set filnam",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "filnam",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"filnam": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
